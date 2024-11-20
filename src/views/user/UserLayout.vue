@@ -34,21 +34,21 @@
                 <ul>
                     <li class="flex justify-between shadow">
                         <RouterLink 
-                            class="w-full p-4"
+                            class="w-full p-4 text-sm"
                             active-class="bg-blue-500 text-white font-bold"    
                             :to="{ name: 'control-de-verificacion'}"
                         >Control de Verificación</RouterLink>
                     </li>
                     <li class="flex justify-between shadow">
                         <RouterLink 
-                            class="w-full p-4"
+                            class="w-full p-4 text-sm"
                             active-class="bg-blue-500 text-white font-bold"   
                             :to="{ name: 'verificar-protocolos'}"
                         >Verificar Protocolos</RouterLink>
                     </li>
                     <li class="flex justify-between shadow">
                         <RouterLink 
-                            class="w-full p-4"
+                            class="w-full p-4 text-sm"
                             active-class="bg-blue-500 text-white font-bold" 
                             :to="{ name: 'protocolos-asignados'}"
                         >Protocolos Asignados</RouterLink>

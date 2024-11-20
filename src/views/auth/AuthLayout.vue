@@ -10,7 +10,7 @@
 </script>
 <template>
     <div class="h-screen flex justify-center items-center p-5 lg:p-0 bg-gray-800">
-        <div class="w-full md:w-8/12 xl:w-5/12">
+        <div class="w-full md:w-5/12 xl:w-5/12">
             <RouterView />
             <nav class="flex justify-between">
                 <RouterLink 
