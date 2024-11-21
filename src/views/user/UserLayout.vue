@@ -17,7 +17,7 @@
     <div class="bg-stone-300">
         <header class="fixed flex justify-between w-full items-center px-10 py-5 bg-gray-800">
             <h1 class="text-4xl md:text-5xl">
-                <Logo />
+                <Logo fontSize="text-4xl" />
             </h1>
             <div class="flex flex-col bgs-red-100">
                 <p class="mb-2 text-center text-white">Usuario: <span class="font-bold">Lionel Prats</span></p>
@@ -28,8 +28,10 @@
                 />
             </div>
         </header>
-        <main class="flex h-screen overflow-y-hidden">
-            <aside class="w-1/6 h-screen pt-32 overflow-y-scroll bg-white">
+        <main class="flex">
+        <!-- h-screen overflow-y-hidden -->
+            <aside class="w-1/6 pt-32 overflow-y-scroll bg-white">
+            <!-- h-screen -->
                 <h3 class="mb-6 text-xl font-bold text-center">Verificación</h3>
                 <ul>
                     <li class="flex justify-between shadow">

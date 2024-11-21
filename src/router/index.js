@@ -44,6 +44,12 @@ const router = createRouter({
         },
       ]
     },
+    {
+      path: '/edicion-individual/:idprotocolo',
+      name: 'edicion-individual',
+      component: () => import("../views/user/EdicionIndividualView.vue"),
+      props: { titulo: "Editar Cliente" },
+    },
     { 
       // Ruta comodín para redirigir a login cualquier ruta no definida
       path: '/:pathMatch(.*)*',

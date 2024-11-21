@@ -12,7 +12,7 @@
 
 <template>
     <h1 class="flex flex-col items-center gap-4 mb-10 text-4xl md:text-5xl font-bold text-white">
-        <Logo />
+        <Logo fontSize="text-5xl" />
         Iniciar Sesión
     </h1>
     

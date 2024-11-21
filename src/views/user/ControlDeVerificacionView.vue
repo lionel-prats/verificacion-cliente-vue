@@ -1,24 +1,12 @@
 <script setup>
+
+    import { useVerificacionStore } from '@/stores/verificacion';
+
     import Button from "@/components/Button.vue"
     import RegistroTablaControlDeVerificacion from "@/components/RegistroTablaControlDeVerificacion.vue"
 
-    const proyectos = [
-        {
-            id: 1,
-            cantidad: 50,
-            proyecto: "CABA",
-        },
-        {
-            id: 2,
-            cantidad: 15,
-            proyecto: "Corrientes",
-        },
-        {
-            id: 3,
-            cantidad: 7,
-            proyecto: "Salta",
-        },
-    ]
+    const verificacionStore = useVerificacionStore()
+    
     const copiarRegistros = () => {
         console.log("copiando registros");
     }
@@ -47,10 +35,11 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
                                 <RegistroTablaControlDeVerificacion 
-                                    v-for="proyecto in proyectos"
+                                    v-for="proyecto in verificacionStore.obtenerProyectos"
                                     :key="proyecto.id"
                                     :proyecto="proyecto"
                                 />
+                                <!-- v-for="proyecto in proyectos" -->
                                 <!-- @actualizar-estado="actualizarEstado"
                                 @eliminar-cliente="eliminarCliente" -->
                             </tbody>

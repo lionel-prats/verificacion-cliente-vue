@@ -14,8 +14,8 @@
             required: true
         },
     });
-
 </script>
+
 <template>
     <button
         type="button"
