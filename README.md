@@ -27,3 +27,8 @@ npm run dev
 ```sh
 npm run build
 ```
+
+# Dependencias Instaladas
+
+### 1. vue-magnifier - Vue 3 image zoom component
+### https://vue-magnifier.js.org/

@@ -1,77 +1,129 @@
 <script setup lang="ts">
-    // https://vue-magnifier.js.org/
-    // npm install @websitebeaver/vue-magnifier
-    import VueMagnifier from '@websitebeaver/vue-magnifier'
-    import '@websitebeaver/vue-magnifier/styles.css'
 
+    // vue
+    import { onMounted, ref/* , computed */ } from "vue"
+
+    // libs externas
+    import VueMagnifier from '@websitebeaver/vue-magnifier' // vue-magnifier 
+    import '@websitebeaver/vue-magnifier/styles.css' // vue-magnifier 
+    
+    // libs propias
+    import VerificacionAPI from "@/api/VerificacionApi"
+    
+    // componentes
     import Button from "@/components/Button.vue"
     import Logo from "@/components/Logo.vue"
+    import RouterLink from "@/components/RouterLink.vue"
 
-    const teclasValor = {1:'DESC 01', 2:'DESC 02', 3:'DESC 03', 4:'DESC 04', 5:'DESC 05', 6:'DESC 06', 7:'DESC 07', 8:'DESC 08', 9:'DESC 09', "0.":'DESC 10', "Q":'DESC 11', "W":'DESC 12', "E":'DESC 13', "R":'DESC 14', "A":'APROBADO'}
-    
-    /* cias.tipo_descartes_verificacion */
-    const tipo_descarte = [
-        {
-            id: 1,
-            descripcion: "DATOS DEL BANER ERRONEO / PRUEBA / TEST / FECHA VENCIDA / BANER AMPLIADO"
-        },
-        {
-            id: 2,
-            descripcion: "FOTO EN BLANCO O INEXISTENTE"
-        },
-        {
-            id: 3,
-            descripcion: "CORTES DE CALLE / AGENTE DE TRANSITO / ACCCIDENTES / DESVIOS"
-        },
-        {
-            id: 4,
-            descripcion: "ERROR EN CARRIL / 2 VEHICULOS EN CARRIL DE MEDICION"
-        },
-        {
-            id: 5,
-            descripcion: "OBSTACULO EN VEHICULO O PATENTE / RAMA / CINTA"
-        },
-        {
-            id: 6,
-            descripcion: "PATENTE ILEGIBLE  / ADULTERADA / INEXISTENTE / INVENTADA"
-        },
-        {
-            id: 7,
-            descripcion: "PATENTE EXTRANJERA / VEHICULOS OFICIALES"
-        },
-        {
-            id: 8,
-            descripcion: "SEMAFORO VERDE  - AMARILLO / ROJO AMARILLO / VEHICULO SIN INFRACCION"
-        },
-        {
-            id: 9,
-            descripcion: "FOTOS DE NOCHE / VEHICULO NO SE VISUALIZA / PATENTE ILEGIBLE"
-        },
-        {
-            id: 10,
-            descripcion: "PUNTERO MAL ENFOCADO"
-        },
-        {
-            id: 11,
-            descripcion: "SECUENCIA DE FOTOS NO COINCIDE VEHICULO / AUSENCIA DE VEHICULO"
-        },
-        {
-            id: 12,
-            descripcion: "CAMARA FUERA DE FOTO / CAMARA MAL ENFOCADA"
-        },
-        {
-            id: 13,
-            descripcion: "CAMARA SUCIA"
-        },
-        {
-            id: 14,
-            descripcion: "NOCHE / FOTO OSCURA / FUERA DE FOCO"
-        },
-        {
-            id: 15,
-            descripcion: "FILTRO GENERAL ANTIGUO"
-        },
-    ]
+    onMounted(async() => {
+        try {
+            // const { data } = await VerificacionAPI.listadoTipoDescartes()
+            // tipo_descarte.value = data
+            traeTipoDescarte()
+            await traedatos()
+            cargarImagen()
+        } catch(error) {
+            console.log(error);
+        }
+    })
+
+    // states
+    const numero = ref(0) //desuso
+    const numsec = ref(0) //desuso
+    const ira = ref(0) //desuso
+    const loaded = ref(false) //desuso
+    const editando = ref(false) //desuso
+    const base_url = ref("") //desuso
+    const headers = ref({'Content-Type':'application/x-www-form-urlencoded'}) //desuso
+    const imageUrl = ref("") //desuso
+    const estilo_img = ref(0) //desuso
+    const imagenClase = ref( "") //desuso
+    const selectedOptionDescarte = ref('') //desuso
+    const selectedOptioninfraccion = ref('') //desuso
+    const secuencia = ref([]) //desuso
+    const datos = ref([]) //desuso
+    const url = ref('') //desuso
+
+    const teclasValor = {1:'DESC 01', 2:'DESC 02', 3:'DESC 03', 4:'DESC 04', 5:'DESC 05', 6:'DESC 06', 7:'DESC 07', 8:'DESC 08', 9:'DESC 09', "0.":'DESC 10', "Q":'DESC 11', "W":'DESC 12', "E":'DESC 13', "R":'DESC 14', "A":'APROBADO'} // activo
+
+    const teclasValidas = [49, 50, 51, 52, 53, 54, 55, 56, 57,97,98,99,100,101,102,103,104,105] // desuso
+    // 48-96 = 0
+    const teclasValidasLetrasOcero = {48:10,96:10,81:11,87:12,69:13,82:14} // desuso
+    const contenedor = ref("") // desuso
+    const protocolo = ref({}) // desuso
+    const titulo = ref("") // desuso
+    const editandoinfraccion = ref(false) // desuso
+    const editandodescarte = ref(false) // desuso
+    // lo que mandamos
+    const protocolo_enviar = ref(0) // desuso
+    const protocolos_eliminados = ref([]) // desuso
+    const protocolos_modificados = ref([]) // desuso
+    const dominios = ref([]) // desuso
+    const id_infraccion_modificada = ref([]) // desuso
+    const infraccion_modificada  = ref([]) // desuso
+
+    const tipo_descarte = ref([]) // activo
+
+    const semaforo = ref(false) // desuso
+    const errorModalVisible = ref(false) // desuso
+    const errorMessage = ref('') // desuso
+
+    const urlImagen = ref("") // propio
+    // fin states 
+
+    // peticiones API
+    const traeTipoDescarte = async() => {
+      const { data } = await VerificacionAPI.listadoTipoDescartes()
+      tipo_descarte.value = data
+    }
+    const traedatos = async() => {
+        
+        const protocoloParam = window.location.href.split('/').pop()
+
+        const { data } = await VerificacionAPI.api_edicion_individual(protocoloParam)
+        // vm.value = data
+        
+        // if(response.data.datos){
+        if(data.datos){
+            protocolo.value = data.protocolo;
+            datos.value = data.datos;
+            datos.value.map(function (e, index) {
+                if (e.identrada == data.ultimo) {
+                    numero.value = index;
+                }
+            });
+            titulo.value = data.titulo;
+            semaforo.value = data.semaforo;
+            base_url.value = data.url;
+            // descarte.value = data.descarte;
+        }
+    }
+    const cargarImagen = async() => {
+        
+        const queryString = {
+            p: protocolo.value.id,
+            f: "NE_00611%2020240313155241.jpg",
+            // p: protocolo.value.id,
+            // f: datos[numero.value].secuencia[numsec],
+        }
+        
+        const { data } = await VerificacionAPI.ver_fotos_ssti(queryString)
+        urlImagen.value = data;
+        // urlImagen = "http://192.168.3.14/WS/ver-foto.php?p=293322&f=NE_00611%2020240313155241.jpg&c=50"
+    }
+    // fin peticiones API
+
+    // funciones 
+    const fetchDataAndOpenTab = () => {
+        const protocolo = window.location.href.split('/').pop();
+        window.open(`http://192.168.3.14/WS/ver-foto.php?p=${protocolo}&f=NE_00611%2020240313155241.jpg&c=50 _blank`)
+        // window.open(
+        //     'http://192.168.3.14/WS/ver-foto.php?p=' + encodeURIComponent(protocolo) +
+        //     '&f=' + encodeURIComponent(this.datos[this.numero].secuencia[this.numsec]) +
+        //     '&c=50',
+        //     '_blank'
+        // );
+    }
 
     const logout = () => {
         console.log("cerrar sesion");   
@@ -104,22 +156,24 @@
         </header>
         <div class="flex gap-8 px-3 py-4 mb-8 bg-stone-300">
           <p>Edición individual</p>
-          <p>Registros A editar: <span class="font-semibold text-blue-500">91</span></p>
-          <p>Equipo: <span class="font-semibold text-amber-950">NEO_0061</span></p>
-          <p>Proyecto: <span class="font-semibold text-amber-950">Bahía Blanca</span></p>
-          <p class="flex-1 pr-8 text-end">Protocolo Nº 293322</p>
+          <p>Registros A editar: <span class="font-semibold text-blue-500">{{ datos.length }}</span></p>
+          <p>Equipo: <span class="font-semibold text-amber-950">{{ protocolo.equipo_serie }}</span></p>
+          <p>Proyecto: <span class="font-semibold text-amber-950">{{ protocolo.proyecto }}</span></p>
+          <p class="flex-1 pr-8 text-end">Protocolo Nº {{ protocolo.id }}</p>
         </div>
 
         <div class="grid grid-cols-2 w-11/12 m-auto">
         
             <div>
                 <VueMagnifier 
-                    src="/edicion/209125.PNG" 
+                    :src="urlImagen" 
                     width="100%"
                     mgWidth="300"
                     mgHeight="200"
                     mgShape="square"
+                    @click="fetchDataAndOpenTab"
                 />
+                <!-- src="/edicion/209125.PNG" --> 
             </div>
         
             <div class="px-4 bg-blue-100x">
@@ -211,15 +265,14 @@
                     </div>
                     <div class="flex gap-2">
                         <Button 
-                            textButton="Salir" 
-                            colors="bg-red-700 hover:bg-blue-600 text-white"
-                            :onClick="logout"
-                        />
-                        <Button 
                             textButton="Deshacer último" 
                             colors="bg-yellow-600 hover:bg-blue-600 text-white"
                             :onClick="logout"
                         />
+                        <RouterLink 
+                          colors="bg-red-700 hover:bg-blue-600 text-white"
+                          to="protocolos-asignados"
+                        >Salir</RouterLink>
                     </div>
                 </div>
 
@@ -270,7 +323,9 @@
                 </div>
 
                 <div class="flex items-center gap-8">
-                    <button class="p-3 rounded font-semibold text-center bg-indigo-400">Guardar</button>
+                    <button 
+                      class="p-3 rounded font-semibold text-center bg-indigo-400"
+                    >Editar</button>
                     <div class="flex items-stretch gap-2">
                         <input 
                             class="w-8 p-3 rounded bg-gray-300"
